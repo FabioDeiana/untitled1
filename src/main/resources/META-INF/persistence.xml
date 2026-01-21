@@ -5,6 +5,9 @@
     <persistence-unit name="gestioneeventipu">
 
         <class>fabio.entities.Evento</class>
+        <class>fabio.entities.Persona</class>
+        <class>fabio.entities.Location</class>
+        <class>fabio.entities.Partecipazione</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestioneeventi"/>
