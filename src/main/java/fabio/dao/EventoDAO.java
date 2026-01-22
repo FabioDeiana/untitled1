@@ -1,9 +1,13 @@
 package fabio.dao;
 
 import fabio.entities.Evento;
+import fabio.entities.Concerto;
+import fabio.entities.Genere;
 import fabio.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
+import java.util.List;
 
 public class EventoDAO {
     private final EntityManager entityManager;
@@ -44,5 +48,23 @@ public class EventoDAO {
         transaction.commit();
         // 6. Log
         System.out.println("L'evento con id: " + eventoId + " è stato eliminato!");
+    }
+
+    public List<Concerto> getConcertiInStreaming(boolean inStreaming) {
+        TypedQuery<Concerto> query = entityManager.createQuery(
+                "SELECT c FROM Concerto c WHERE c.inStreaming = :streaming",
+                Concerto.class
+        );
+        query.setParameter("streaming", inStreaming);
+        return query.getResultList();
+    }
+
+    public List<Concerto> getConcertiPerGenere(Genere genere) {
+        TypedQuery<Concerto> query = entityManager.createQuery(
+                "SELECT c FROM Concerto c WHERE c.genere = :genere",
+                Concerto.class
+        );
+        query.setParameter("genere", genere);
+        return query.getResultList();
     }
 }

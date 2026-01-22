@@ -22,43 +22,83 @@ public class Application {
         EventoDAO ed = new EventoDAO(entityManager);
         PersonaDAO pd = new PersonaDAO(entityManager);
         LocationDAO ld = new LocationDAO(entityManager);
-        PartecipazioneDAO partd = new PartecipazioneDAO(entityManager);
 
-        // 1. Creo e salvo una Location
-        Location location1 = new Location("Teatro Verdi", "Milano");
-        ld.save(location1);
+        // Creo location
+        Location stadio = new Location("Stadio Olimpico", "Roma");
+        Location arena = new Location("Arena Civica", "Milano");
+         ld.save(stadio);
+         ld.save(arena);
 
-        // 2. Creo e salvo una Persona
-        Persona persona1 = new Persona("Mario", "Rossi", "mario.rossi@email.com", LocalDate.of(1990, 5, 15), Sesso.M);
-        pd.save(persona1);
+        // Creo persone
+        Persona mario = new Persona("Mario", "Rossi", "mario@email.com", LocalDate.of(1990, 5, 15), Sesso.M);
+        Persona luca = new Persona("Luca", "Bianchi", "luca@email.com", LocalDate.of(1985, 3, 20), Sesso.M);
+        Persona giulia = new Persona("Giulia", "Verdi", "giulia@email.com", LocalDate.of(1992, 7, 10), Sesso.F);
+        pd.save(mario);
+        pd.save(luca);
+        pd.save(giulia);
 
-        // 3. Creo e salvo un Evento collegato alla Location
-        Evento evento1 = new Evento("Concerto Rock", LocalDate.of(2025, 2, 15), "Concerto di musica rock", TipoEvento.PUBBLICO, 500);
-        evento1.setLocation(location1);
-        ed.save(evento1);
+        // Creo una partita di calcio
+        PartitaDiCalcio partita = new PartitaDiCalcio(
+                "Derby",
+                LocalDate.of(2025, 3, 15),
+                "Derby cittadino",
+                TipoEvento.PUBBLICO,
+                50000,
+                "Inter",
+                "Milan",
+                "Inter",
+                2,
+                1
+        );
+        partita.setLocation(stadio);
+        // ed.save(partita);
 
-        // 4. Creo e salvo una Partecipazione che collega Persona ed Evento
-        Partecipazione partecipazione1 = new Partecipazione(persona1, evento1, StatoPartecipazione.CONFERMATA);
-        partd.save(partecipazione1);
+        // Creo una gara di atletica
+        GaraDiAtletica gara = new GaraDiAtletica(
+                "Maratona di Milano",
+                LocalDate.of(2025, 4, 20),
+                "Maratona cittadina",
+                TipoEvento.PUBBLICO,
+                1000
+        );
+        gara.setLocation(arena);
+        gara.getAtleti().add(mario);
+        gara.getAtleti().add(luca);
+        gara.getAtleti().add(giulia);
+        gara.setVincitore(mario);
+        // ed.save(gara);
 
-        // TEST: Recupero l'evento e vedo se ha la location
-        try {
-            Evento eventoFromDB = ed.getById(evento1.getId());
-            System.out.println("\n--- EVENTO RECUPERATO ---");
-            System.out.println(eventoFromDB);
-        } catch (NotFoundException ex) {
-            System.out.println(ex.getMessage());
-        }
+        // Creo concerti
+        Concerto concerto1 = new Concerto(
+                "Concerto Rock",
+                LocalDate.of(2025, 5, 10),
+                "Serata rock",
+                TipoEvento.PUBBLICO,
+                5000,
+                Genere.ROCK,
+                true
+        );
+        concerto1.setLocation(arena);
+        // ed.save(concerto1);
 
-        // TEST: Recupero la persona e vedo se ha le partecipazioni
-        try {
-            Persona personaFromDB = pd.getById(persona1.getId());
-            System.out.println("\n--- PERSONA RECUPERATA ---");
-            System.out.println(personaFromDB);
-            System.out.println("Numero partecipazioni: " + personaFromDB.getListaPartecipazioni().size());
-        } catch (NotFoundException ex) {
-            System.out.println(ex.getMessage());
-        }
+        Concerto concerto2 = new Concerto(
+                "Concerto Pop",
+                LocalDate.of(2025, 6, 15),
+                "Serata pop",
+                TipoEvento.PUBBLICO,
+                3000,
+                Genere.POP,
+                false
+        );
+        concerto2.setLocation(stadio);
+        // ed.save(concerto2);
+
+        // TEST QUERY JPQL
+        System.out.println("\n--- CONCERTI IN STREAMING ---");
+        ed.getConcertiInStreaming(true).forEach(c -> System.out.println(c));
+
+        System.out.println("\n--- CONCERTI GENERE ROCK ---");
+        ed.getConcertiPerGenere(Genere.ROCK).forEach(c -> System.out.println(c));
 
         entityManager.close();
         entityManagerFactory.close();

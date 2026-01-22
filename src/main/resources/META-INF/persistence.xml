@@ -8,6 +8,9 @@
         <class>fabio.entities.Persona</class>
         <class>fabio.entities.Location</class>
         <class>fabio.entities.Partecipazione</class>
+        <class>fabio.entities.PartitaDiCalcio</class>
+        <class>fabio.entities.GaraDiAtletica</class>
+        <class>fabio.entities.Concerto</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestioneeventi"/>

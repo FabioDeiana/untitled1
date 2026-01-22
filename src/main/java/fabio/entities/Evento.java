@@ -7,7 +7,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "eventi")
-public class Evento {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_evento_classe")
+public abstract class Evento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -28,7 +30,6 @@ public class Evento {
     @Column(name = "numero_massimo_partecipanti", nullable = false)
     private int numeroMassimoPartecipanti;
 
-    // NUOVE RELAZIONI
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
